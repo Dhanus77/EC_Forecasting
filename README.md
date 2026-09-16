@@ -1,177 +1,107 @@
+Yes. For GitHub, I’d make it **shorter and recruiter-friendly**. It should quickly show: **what you built, how, results, how to run it, and the tech stack**.
+
+Delete your current `README.md` contents and paste **this entire block**:
+
+````markdown
 # Energy Consumption Forecasting Using Time Series and Weather Features
 
-A machine learning-based time-series forecasting system that predicts household appliance energy consumption one hour ahead using historical consumption patterns, temporal features, and environmental data.
+A machine learning-based time-series forecasting system that predicts household appliance energy consumption **one hour ahead** using historical energy usage, temporal patterns, and environmental features.
 
-## Project Overview
+## Overview
 
-Energy consumption changes throughout the day based on usage patterns, time-related behavior, and environmental conditions. This project develops a forecasting pipeline to predict future household appliance energy consumption using historical observations from the UCI Appliances Energy Prediction dataset.
+Energy consumption varies throughout the day based on usage patterns, time, and environmental conditions. This project develops an end-to-end forecasting pipeline using the **UCI Appliances Energy Prediction Dataset** and integrates the trained model into an interactive **Streamlit dashboard**.
 
-The project covers the complete machine learning workflow:
+### Key Components
 
-- Data understanding and preprocessing
-- Time-series target construction
+- Time-series data preprocessing
+- One-hour-ahead forecasting
 - Temporal and cyclical feature engineering
 - Lag and rolling-window features
-- Model training and comparison
-- Hyperparameter tuning
-- Final model evaluation on unseen test data
-- Streamlit-based forecasting application
+- Weather and environmental features
+- Chronological train/validation/test split
+- Machine learning model comparison
+- Ridge Regression hyperparameter tuning
+- Streamlit deployment
 
 ## Dataset
 
-**Dataset:** UCI Appliances Energy Prediction
-
-The dataset contains:
+**UCI Appliances Energy Prediction Dataset**
 
 - 19,735 observations
 - 29 original variables
-- 10-minute sampling intervals
+- 10-minute sampling interval
 - Appliance energy consumption measured in Wh
 - Indoor temperature and humidity measurements
 - Outdoor weather measurements
 - Lighting consumption
 
-The forecasting target is defined as appliance energy consumption **one hour ahead (t + 60 minutes)**.
+**Forecast Horizon:** 1 hour (6 × 10-minute intervals)
 
-Dataset source:
-
+**Source:**  
 https://archive.ics.uci.edu/dataset/374/appliances%2Benergy%2Bprediction
 
-## Methodology
+## Feature Engineering
 
-### 1. Data Preprocessing
+The forecasting pipeline uses:
 
-The raw time-series data was:
+- Temporal features: hour, day, month, weekday, weekend, week of year
+- Cyclical features: sine and cosine encoding of hour
+- Lag features: 10-minute to 1-week historical lags
+- Rolling statistics: 30-minute, 1-hour, and 2-hour windows
+- Indoor temperature and humidity
+- Outdoor weather conditions
+- One-hour weather change features
 
-- Converted to datetime format
-- Chronologically sorted
-- Checked for missing values and duplicates
-- Processed using the original 10-minute sampling frequency
-- Checked for redundant variables
-- Prepared for one-hour-ahead forecasting
+Lag and rolling features use only information available at or before the prediction time to prevent future-data leakage.
 
-The random variables `rv1` and `rv2` were removed as they were redundant for the forecasting workflow.
+## Model Development
 
-### 2. Feature Engineering
+The following models were evaluated:
 
-The forecasting model uses several categories of features.
+| Category | Models |
+|---|---|
+| Baselines | Persistence, 24-Hour Lag |
+| Linear | Linear Regression, Ridge Regression |
+| Tree-Based | Random Forest, Gradient Boosting, XGBoost |
 
-**Temporal Features**
+Evaluation metrics:
 
-- Hour
-- Day
-- Month
-- Day of week
-- Weekend indicator
-- Week of year
+- MAE — Mean Absolute Error
+- RMSE — Root Mean Squared Error
+- R² — Coefficient of Determination
 
-**Cyclical Features**
+The final Ridge Regression model was tuned using the chronological validation dataset.
 
-- Hour sine
-- Hour cosine
-
-**Lag Features**
-
-- 10-minute lag
-- 20-minute lag
-- 30-minute lag
-- 1-hour lag
-- 2-hour lag
-- 1-day lag
-- 1-week lag
-
-**Rolling Features**
-
-- 30-minute rolling mean and standard deviation
-- 1-hour rolling mean and standard deviation
-- 2-hour rolling mean and standard deviation
-
-**Weather Features**
-
-- Outdoor temperature
-- Outdoor humidity
-- Wind speed
-- Visibility
-- Atmospheric pressure
-- Dew point
-
-**Weather Change Features**
-
-- 1-hour outdoor temperature change
-- 1-hour outdoor humidity change
-
-All lag and rolling features are constructed using information available at or before the prediction time to avoid future-data leakage.
-
-## Time-Series Split
-
-The dataset was divided chronologically rather than randomly:
-
-| Dataset | Proportion |
-|---|---:|
-| Training | 70% |
-| Validation | 15% |
-| Test | 15% |
-
-The test set was kept untouched during model selection and hyperparameter tuning.
-
-## Models Evaluated
-
-The following approaches were evaluated:
-
-### Baseline Models
-
-- Persistence baseline
-- 24-hour lag baseline
-
-### Linear Models
-
-- Linear Regression
-- Ridge Regression
-
-### Tree-Based Models
-
-- Random Forest
-- Gradient Boosting
-- XGBoost
-
-Models were evaluated using:
-
-- Mean Absolute Error (MAE)
-- Root Mean Squared Error (RMSE)
-- R² Score
-
-## Model Selection
-
-Ridge Regression was tuned using the chronological validation set.
-
-The selected final configuration uses:
+**Final configuration:**
 
 ```text
-Ridge Regression
-Alpha = 4000
+Model: Ridge Regression
+Alpha: 4000
+````
+
 ## Final Test Performance
 
-The final Ridge Regression model was retrained using the combined training and validation datasets and evaluated on the untouched test dataset.
+The final model was retrained using the combined training and validation datasets and evaluated on the untouched test dataset.
 
-| Metric | Test Result |
-|---|---:|
-| MAE | 39.63 Wh |
-| RMSE | 80.08 Wh |
-| R² Score | 0.233 |
+| Metric |       Result |
+| ------ | -----------: |
+| MAE    | **39.63 Wh** |
+| RMSE   | **80.08 Wh** |
+| R²     |    **0.233** |
 
-The model achieved an average absolute forecasting error of approximately 39.63 Wh on the unseen test period.
+The model achieved an average absolute forecasting error of approximately **39.63 Wh** on the unseen test period.
 
-## Streamlit Application
+## Streamlit Dashboard
 
-The trained forecasting pipeline is integrated into an interactive Streamlit dashboard with four modes:
+The trained forecasting pipeline is integrated into a Streamlit application with four modes:
 
 ### LIVE
 
-Designed for integration with real energy data from sources such as smart meters, smart plugs, IoT sensors, Home Assistant, or energy APIs.
+Designed for integration with real energy sources such as smart meters, smart plugs, IoT sensors, Home Assistant, or energy APIs.
 
 ### LIVE SIMULATION
 
-Provides a synthetic real-time demonstration of energy and weather data for testing and presentation purposes.
+Provides a synthetic real-time demonstration for testing and presentation purposes.
 
 ### MANUAL PREDICTION
 
@@ -192,10 +122,6 @@ EC_Forecasting/
 ├── data/
 │   ├── energydata_complete.csv
 │   └── processed/
-│       ├── energy_forecasting_preprocessed.csv
-│       ├── train_features.csv
-│       ├── validation_features.csv
-│       └── test_features.csv
 │
 ├── models/
 │   ├── final_ridge_model.pkl
@@ -214,7 +140,90 @@ EC_Forecasting/
 │   └── predict.py
 │
 └── presentation/
-    ├── ENERGY CONSUMPTION FORECASTING USING TIME SERIES AND WEATHER FEATURES.pdf
+    ├── Energy Consumption Forecasting Presentation.pdf
     ├── Energy_Consumption_Forecasting_Abstract.docx
     ├── Energy_Consumption_Forecasting_Abstract.pdf
     └── model_comparison_validation_mae.png
+```
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/Dhanus77/EC_Forecasting.git
+cd EC_Forecasting
+```
+
+Create a virtual environment:
+
+```bash
+python -m venv .venv
+```
+
+Activate it on Windows:
+
+```bash
+.venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Run the Application
+
+```bash
+streamlit run app.py
+```
+
+## Technologies
+
+* **Python**
+* **Pandas**
+* **NumPy**
+* **Scikit-learn**
+* **XGBoost**
+* **Matplotlib**
+* **Plotly**
+* **Streamlit**
+* **Jupyter Notebook**
+* **Git & GitHub**
+
+## Key Findings
+
+Recent energy consumption and time-based patterns provided useful information for forecasting future demand. Lag and rolling-window features captured recent consumption behavior and provided historical context for the prediction.
+
+Weather features were included and evaluated. For this dataset and model setup, adding weather produced only a small change in validation performance, while historical consumption and temporal features remained important predictors.
+
+## Future Scope
+
+* Smart-meter and IoT integration
+* Automated real-time energy data collection
+* Live weather integration
+* Longer-term datasets
+* Advanced time-series forecasting models
+* Deep learning-based forecasting
+* Personalized energy forecasting
+* Multi-step forecasting
+* Energy monitoring and alerts
+
+## Author
+
+**Dhanus D**
+B.Tech — Artificial Intelligence and Machine Learning
+
+````
+
+### After you paste it
+
+Save with **Ctrl + S**, then run these commands:
+
+```powershell
+git add README.md
+git commit -m "Improve project README"
+git push
+````
+
