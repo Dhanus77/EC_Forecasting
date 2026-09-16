@@ -1,8 +1,3 @@
-Yes. For GitHub, I’d make it **shorter and recruiter-friendly**. It should quickly show: **what you built, how, results, how to run it, and the tech stack**.
-
-Delete your current `README.md` contents and paste **this entire block**:
-
-````markdown
 # Energy Consumption Forecasting Using Time Series and Weather Features
 
 A machine learning-based time-series forecasting system that predicts household appliance energy consumption **one hour ahead** using historical energy usage, temporal patterns, and environmental features.
