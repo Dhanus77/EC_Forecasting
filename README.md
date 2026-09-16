@@ -149,3 +149,72 @@ The selected final configuration uses:
 ```text
 Ridge Regression
 Alpha = 4000
+## Final Test Performance
+
+The final Ridge Regression model was retrained using the combined training and validation datasets and evaluated on the untouched test dataset.
+
+| Metric | Test Result |
+|---|---:|
+| MAE | 39.63 Wh |
+| RMSE | 80.08 Wh |
+| R² Score | 0.233 |
+
+The model achieved an average absolute forecasting error of approximately 39.63 Wh on the unseen test period.
+
+## Streamlit Application
+
+The trained forecasting pipeline is integrated into an interactive Streamlit dashboard with four modes:
+
+### LIVE
+
+Designed for integration with real energy data from sources such as smart meters, smart plugs, IoT sensors, Home Assistant, or energy APIs.
+
+### LIVE SIMULATION
+
+Provides a synthetic real-time demonstration of energy and weather data for testing and presentation purposes.
+
+### MANUAL PREDICTION
+
+Allows users to enter energy, date/time, indoor environmental, and outdoor weather values to generate a one-hour-ahead forecast.
+
+### HISTORICAL DATASET
+
+Uses the original UCI dataset to demonstrate the forecasting pipeline and model results.
+
+## Project Structure
+
+```text
+EC_Forecasting/
+│
+├── app.py
+├── requirements.txt
+│
+├── data/
+│   ├── energydata_complete.csv
+│   └── processed/
+│       ├── energy_forecasting_preprocessed.csv
+│       ├── train_features.csv
+│       ├── validation_features.csv
+│       └── test_features.csv
+│
+├── models/
+│   ├── final_ridge_model.pkl
+│   ├── final_scaler.pkl
+│   └── model_features.pkl
+│
+├── notebooks/
+│   ├── 01_data_understanding.ipynb
+│   ├── 02_data_preprocessing.ipynb
+│   ├── 03_feature_engineering.ipynb
+│   ├── 04_baseline_model.ipynb
+│   └── 05_machine_learning_models.ipynb
+│
+├── src/
+│   ├── feature_engineering.py
+│   └── predict.py
+│
+└── presentation/
+    ├── ENERGY CONSUMPTION FORECASTING USING TIME SERIES AND WEATHER FEATURES.pdf
+    ├── Energy_Consumption_Forecasting_Abstract.docx
+    ├── Energy_Consumption_Forecasting_Abstract.pdf
+    └── model_comparison_validation_mae.png
